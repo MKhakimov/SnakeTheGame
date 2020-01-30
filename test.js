@@ -85,6 +85,8 @@ function controlSnake(axis, vector){
       console.log(JSON.stringify(objSnake[i]));
       console.log(JSON.stringify(objMouse));
         if (objSnake[0].x === objMouse.x && objSnake[0].y === objMouse.y){
+            moveMouse();
+            console.log('mouse now in ', JSON.stringify(objMouse));
             objSnake.push({x:0, y:0});
             console.log('push');
         }
@@ -114,7 +116,18 @@ const myConstolSnake = function() {
 let timerId = setInterval(myConstolSnake, 1500);
 
 //setInterval(() => console.log("woohoo"), 1500)
+function moveMouse() {
+  //console.log('Оп Бля');
+    objMouse.x = getRandomInt(-8 , 8);
+    elementMouse.style.marginLeft = objMouse[0] + "px";
+    objMouse.y = getRandomInt(-6, 6);
+    elementMouse.style.marginTop = objMouse[1] + "px";
+}
 
+function getRandomInt(min, max) {
+  let rand = min - 0.5 + Math.random() * (max - min + 1);
+  return Math.round(rand);
+}
 document.addEventListener("keydown", key);
 
 // linear
