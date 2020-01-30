@@ -1,9 +1,9 @@
 const elementSnake = document.getElementById("snakeToMove");
 const elementMouse = document.getElementById("mouseToMove");
-elementMouse.style.marginTop = 0 + "px";
-elementMouse.style.marginLeft = 0 + "px";
-elementSnake.style.marginTop = snakeArr[0] + "px";
-elementSnake.style.marginLeft = snakeArr[1] + "px";
+//elementMouse.style.marginTop = 0 + "px";
+//elementMouse.style.marginLeft = 0 + "px";
+//elementSnake.style.marginTop = snakeArr[0] + "px";
+//elementSnake.style.marginLeft = snakeArr[1] + "px";
 
 const makeObjSnake = (x, y) => {
   return {
@@ -17,7 +17,15 @@ const keys = {
   RIGHT: 39,
   DOWN: 40
 }
+const area = { //высотка и ширина в шагах
+  WIDTH: 6 ,
+  HEIGHT: 8
+}
 
+let step = 50;
+let axi = 'x';
+let dir = 1;
+let lastMove;
 let z=0;
 let objSnake= [makeObjSnake(0, 0)];
 let tick = 0;
@@ -26,9 +34,6 @@ let objMouse = {
   y: 3
 }
 
-let axi = 'x';
-let dir = 1;
-let lastMove;
 
 function key(b){
   switch(b.keyCode){
@@ -67,15 +72,15 @@ function key(b){
 
 function controlSnake(axis, vector){
   console.log('go!');
-  if (tick===0){
+  if (tick===0){ //начало, логическое добавление головы
     objSnake.push({x:0, y:0});
     objSnake[0][axis] += vector;
     tick += 1;
-    } else {
+  } else { //логическое движение
     let prevTile;
     for (let i=0; i<objSnake.length; i += 1){
       let currTile = Object.assign({}, objSnake[i]);
-      if (i===0){
+      if (i===0){ //направление и движение головы
         objSnake[i][axis] += vector;
       console.log(JSON.stringify(objSnake[i]));
       console.log(JSON.stringify(objMouse));
@@ -83,15 +88,20 @@ function controlSnake(axis, vector){
             objSnake.push({x:0, y:0});
             console.log('push');
         }
-      } else {
+      } else { //движение тела перестановкой значений
         objSnake[i] = prevTile;
       }
       prevTile = currTile;
     }  console.log(JSON.stringify(objSnake));
   }
   console.log(JSON.stringify(objSnake));
+  if (objSnake[0].x !== area.WIDTH && objSnake[0].y !== (area.HEIGHT) && objSnake[0].x !== area.WIDTH*(-1) && objSnake[0].y !== (area.HEIGHT*-1)){
+    //тут может быть ваша ф-я осущ-ая прорисовку
+  }
+  else {
+    alert("You lose");
+  }
 }
-
 //function consoleLog(a, b) { console.log(a, b);}
 
 const myConstolSnake = function() {
