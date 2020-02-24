@@ -17,7 +17,8 @@ const area = { //высота и ширина в шагах
   WIDTH: 8 ,
   HEIGHT: 8
 }
-
+let snakeDivId = [];
+let score = 0;
 let step = 50;
 let axi = 'x';
 let dir = 1;
@@ -81,8 +82,10 @@ function controlSnake(axis, vector){
         console.log('SNAKE IN: ', JSON.stringify(objSnake));
         console.log('MOUSE IN: ', JSON.stringify(objMouse));
         if (objSnake[0].x === objMouse.x && objSnake[0].y === objMouse.y){
-            moveMouse();
+            drawMouseMove();
+            score += 1;
             objSnake.push({x:0, y:0});
+            drawSnakeBody();
             console.log('PUSH!');
         }
       } else { //движение тела перестановкой значений
@@ -91,21 +94,39 @@ function controlSnake(axis, vector){
       prevTile = currTile;
     }
     if (objSnake[0].x !== area.WIDTH && objSnake[0].y !== (area.HEIGHT) && objSnake[0].x !== area.WIDTH*(-1) && objSnake[0].y !== (area.HEIGHT*-1)){
-      elementSnake.style.marginLeft = (objSnake[0].x)*step + "px";
-      elementSnake.style.marginTop = (objSnake[0].y)*step + "px";
+      drawSnakeMove();
     }
     else {
       alert("You lose");
     }
   }
 };
-const myConstolSnake = function() {
+const myControlSnake = function() {
   return controlSnake(axi, dir);
 };
 
-let timerId = setInterval(myConstolSnake, 1000);
+let timerId = setInterval(myControlSnake, 1000);
 
-function moveMouse() {
+function drawSnakeBody() {
+ console.log('+divasdasd');
+ let frankenstein = '<div id="snakeToMove'+score+'" class="snake" style="margin-left:' + objSnake[objSnake.length-1].x*step + 'px; margin-top: ' +objSnake[objSnake.length-1].y*step + 'px;"></div>';
+ let div = document.getElementById('snakeToMove');
+ div.insertAdjacentHTML('afterend', frankenstein);
+ snakeDivId.push("snakeToMove"+score);
+};
+
+function drawSnakeMove() {
+  for (let i=0; i<objSnake.length; i += 1){
+    elementSnake.style.marginLeft = (objSnake[i].x)*step + "px";
+    elementSnake.style.marginTop = (objSnake[i].y)*step + "px";
+    for (let j=0; i<snakeDivId.length; i += 1){
+      let bodyElement = document.getElementById(snakeDivId.j);
+      bodyElement.style.marginLeft = (objSnake[j].x)*step + "px";
+      bodyElement.style.marginTop = (objSnake[j].y)*step + "px";
+    }
+  }
+};
+function drawMouseMove() {
   console.log('Оп Бля');
   objMouse.x = getRandomInt(-8 , 8);
   objMouse.y = getRandomInt(-8, 8);
