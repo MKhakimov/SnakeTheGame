@@ -73,6 +73,7 @@ function controlSnake(axis, vector){
     objSnake.push({x:0, y:0});
     objSnake[0][axis] += vector;
     tick += 1;
+    drawSnakeMove();
   } else { //логическое движение
     let prevTile;
     for (let i=0; i<objSnake.length; i += 1){
@@ -101,13 +102,13 @@ function controlSnake(axis, vector){
     }
   }
 };
+
 const myControlSnake = function() {
   return controlSnake(axi, dir);
 };
-
 let timerId = setInterval(myControlSnake, 1000);
 
-function drawSnakeBody() {
+function drawSnakeBody() { //добавляет div в html
  console.log('+divasdasd');
  let frankenstein = '<div id="snakeToMove'+score+'" class="snake" style="margin-left:' + objSnake[objSnake.length-1].x*step + 'px; margin-top: ' +objSnake[objSnake.length-1].y*step + 'px;"></div>';
  let div = document.getElementById('snakeToMove');
@@ -115,14 +116,15 @@ function drawSnakeBody() {
  snakeDivId.push("snakeToMove"+score);
 };
 
-function drawSnakeMove() {
+function drawSnakeMove() { //проприсовка движения змеи
   for (let i=0; i<objSnake.length; i += 1){
     elementSnake.style.marginLeft = (objSnake[i].x)*step + "px";
     elementSnake.style.marginTop = (objSnake[i].y)*step + "px";
-    for (let j=0; i<snakeDivId.length; i += 1){
-      let bodyElement = document.getElementById(snakeDivId.j);
-      bodyElement.style.marginLeft = (objSnake[j].x)*step + "px";
-      bodyElement.style.marginTop = (objSnake[j].y)*step + "px";
+    for (let j=0; j<snakeDivId.length; j += 1){
+      let bodyElement = document.getElementById(snakeDivId[j]);
+      console.log(bodyElement);
+      bodyElement.style.marginLeft = (objSnake[i].x)*step + "px";
+      bodyElement.style.marginTop = (objSnake[i].y)*step + "px";
     }
   }
 };
