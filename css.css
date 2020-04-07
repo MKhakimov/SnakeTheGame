@@ -4,23 +4,22 @@
   border-radius: 10px;
   width: 850px;
   height: 650px;
-  background: grey;
+  /* background: grey; */
   margin: 0 auto;
   position: relative;
 }
-
 .snake,
 .mouse{
   width: 50px;
   height: 50px;
   border: 1px;
   border-radius: 8px;
-  background: yellow;
+  background: green;
   position: absolute;
   top: 50%;
   left: 50%;
-  /* margin-left: -25px; */
-  /* margin-top: -25px; */
+  margin-left: 25px;
+  margin-top: 25px;
   transform: translate(-50%, -50%);
   transition: .3s;
 }

@@ -1,5 +1,5 @@
-const elementSnake = document.getElementById("snakeToMove");
 const elementMouse = document.getElementById("mouseToMove");
+const wrapper = document.getElementById("wrap4All");
 const makeObjSnake = (x, y) => {
   return {
     x: x,
@@ -7,7 +7,7 @@ const makeObjSnake = (x, y) => {
   }
 }
 let objSnake= [makeObjSnake(0, 0)];
-
+let isStop = 0;
 const keys = {
   LEFT: 37,
   UP: 38,
@@ -15,22 +15,22 @@ const keys = {
   DOWN: 40
 }
 const area = { //высота и ширина в шагах
-  WIDTH: 8 ,
-  HEIGHT: 8
+  WIDTH: 16 ,
+  HEIGHT: 12
 }
-let axi = 'x'; // координата для движения змеи в начале игры
-let dir = 1;   // направление движения змеи в начале игры
+let axi = 'x'; // координата для движения змеи (в начале игры)
+let dir = 1;   // направление движения змеи (в начале игры)
 let score = 0; // счёт, сколько мышей поймано
-let step = 50; // шаг свзязывающий логику и прорисовку
+const step = 50; // шаг свзязывающий логику и прорисовку)
 let lastMove; //
 let tick = 0; // сколько движений произошло
 let objMouse = {
   x: 3,
   y: 3
 };
-elementMouse.style.marginTop = (objMouse.y)*step + "px";
-elementMouse.style.marginLeft = (objMouse.x)*step + "px";
-
+// elementMouse.style.marginTop = (objMouse.y)*step + "px";
+// elementMouse.style.marginLeft = (objMouse.x)*step + "px";
+drawMouseMove();
 function key(b){
   switch(b.keyCode){
     case keys.LEFT:
@@ -66,83 +66,67 @@ function key(b){
 
 function controlSnake(axis, vector){
   if (tick===0){ //начало, логическое добавление головы
-    objSnake.push({x:0, y:0});
+    //objSnake.push({x:0, y:0});
     objSnake[0][axis] += vector;
     tick += 1;
-    //drawSnakeMove();
   } else { //логическое движение
-    let prevTile;
-    for (let i=0; i<objSnake.length; i += 1){
-      let currTile = Object.assign({}, objSnake[i]);
-      if (i===0){ //направление и движение головы + поимка мыши
-        objSnake[i][axis] += vector;
-      } else { //движение тела перестановкой значений
-          objSnake[i] = prevTile;
-        }
-      prevTile = currTile;
+      let prevTile;
+      for (let i=0; i<objSnake.length; i += 1){
+        let currTile = Object.assign({}, objSnake[i]);
+        if (i===0){ //направление и движение головы + поимка мыши
+          objSnake[i][axis] += vector;
+        } else { //движение тела перестановкой значений
+            objSnake[i] = prevTile;
+          }
+        prevTile = currTile;
+      }
     }
-    if (objSnake[0].x !== area.WIDTH && objSnake[0].y !== (area.HEIGHT) && objSnake[0].x !== area.WIDTH*(-1) && objSnake[0].y !== (area.HEIGHT*-1)){
-      //drawSnakeMove();
+    if ( !!objSnake.indexOf(objSnake[1]));
+    drawSnakeMove();
+    console.log('SNAKE IN: ', JSON.stringify(objSnake));
+    console.log('MOUSE IN: ', JSON.stringify(objMouse));
+    if (objSnake[0].x !== area.WIDTH+1 && objSnake[0].y !== area.HEIGHT+1 && objSnake[0].x !== -1 && objSnake[0].y !== -1){
       console.log("snake is moving")
+      if (objSnake[0].x === objMouse.x && objSnake[0].y === objMouse.y){ // логическая поимка мыши
+          objMouse.x = getRandomInt(0, area.WIDTH);
+          objMouse.y = getRandomInt(0, area.HEIGHT);
+          drawMouseMove();
+          score += 1;
+          objSnake.push({x:0, y:0});
+          console.log('PUSH!');
+      }
+
     }
     else {
-      // alert("You lose");
+      isStop = 1;
+      alert("You lose");
     }
-    if (objSnake[0].x === objMouse.x && objSnake[0].y === objMouse.y){ // логическая поимка мыши
-        drawMouseMove();
-        score += 1;
-        objSnake.push({x:0, y:0});
-        //drawSnakeBody();
-        console.log('PUSH!');
-    }
+}
+
+function drawSnakeMove(){
+  let sClass = wrapper.getElementsByClassName('snake');
+  while(sClass.length > 0){
+    sClass[0].parentNode.removeChild(sClass[0]);
   }
-  console.log('SNAKE IN: ', JSON.stringify(objSnake));
-  console.log('MOUSE IN: ', JSON.stringify(objMouse));
+  for (let i=0; i<objSnake.length; i += 1){
+    let snakeEl = document.createElement("div");
+    snakeEl.className = 'snake';
+    wrapper.appendChild(snakeEl);
+    snakeEl.setAttribute('style', 'left:' + step*objSnake[i].x + 'px');
+    snakeEl.style.top= step*objSnake[i].y + 'px';
+  };
 };
 
-// function drawSnakeBody() { //добавляет div в html
-//   let frankenstein = '<div id="snakeToMove'+score+'" class="snake" style="margin-left:' + objSnake[objSnake.length-1].x*step + 'px; margin-top: ' +objSnake[objSnake.length-1].y*step + 'px;"></div>';
-//   if (score = 1){
-//     console.log('!!! Adding First Div !!!');
-//     let div = document.getElementById('mouseToMove');
-//     div.insertAdjacentHTML('afterend', '<div id="snakeToMove0" class="snake" style="margin-left: 0px; margin-top: 0px;"></div>');
-//     snakeDivId.push("snakeToMove"+score);
-//         console.log(snakeDivId);
-//   } else {
-//       console.log('!!! Adding New Div !!!');
-//       let div = document.getElementById('snakeToMove');
-//       div.insertAdjacentHTML('afterend', frankenstein);
-//       snakeDivId.push("snakeToMove"+score);
-//   }
-// };
-
-// function drawSnakeMove() { //прорисовка движения змеи
-//   for (let i=0; i<objSnake.length; i += 1){
-//     elementSnake.style.marginLeft = (objSnake[i].x)*step + "px";
-//     elementSnake.style.marginTop = (objSnake[i].y)*step + "px";
-//     for (let j=0; j<snakeDivId.length; j += 1){
-//       let bodyElement = document.getElementById(snakeDivId[j]);
-//       console.log(bodyElement);
-//       bodyElement.style.marginLeft = (objSnake[i].x)*step + "px";
-//       bodyElement.style.marginTop = (objSnake[i].y)*step + "px";
-//     }
-//   }
-// };
-// function drawSnakeMove() { //прорисовка движения змеи
-//   for (let i=0; i<objSnake.length; i += 1){
-//       let bodyElement = document.getElementById("snakeDivId1");
-//       console.log('ffff  ', bodyElement);
-//       bodyElement.style.marginLeft = (objSnake[i].x)*step + "px";
-//       bodyElement.style.marginTop = (objSnake[i].y)*step + "px";
-//   }
-// };
-
 function drawMouseMove() { // перестановка div мыши при "поимке"
-  console.log('Оп Бля');
-  objMouse.x = getRandomInt(-8 , 8);
-  objMouse.y = getRandomInt(-8, 8);
-  elementMouse.style.marginLeft = JSON.stringify(objMouse.x)*step + "px";
-  elementMouse.style.marginTop = JSON.stringify(objMouse.y)*step + "px";
+  let sClass = wrapper.getElementsByClassName('mouse');
+  while(sClass.length > 0){
+    sClass[0].parentNode.removeChild(sClass[0]);
+  }
+  let mouseEl = document.createElement("div");
+  mouseEl.className = 'mouse';
+  wrapper.appendChild(mouseEl);
+  mouseEl.setAttribute('style', 'left:' + step*objMouse.x + 'px');
+  mouseEl.style.top= step*objMouse.y + 'px';
 };
 
 function getRandomInt(min, max) { // получение рандомных координат для мыши
@@ -150,9 +134,12 @@ function getRandomInt(min, max) { // получение рандомных ко�
   return Math.round(rand);
 };
 
-const myControlSnake = function() { // сальтуха
-  return controlSnake(axi, dir);
+const myControlSnake = function() {
+  while(isStop === 0){ // сальтуха
+    return controlSnake(axi, dir);
+  }
 };
+
 let timerId = setInterval(myControlSnake, 1000);
 
 document.addEventListener("keydown", key);
