@@ -39,7 +39,23 @@ const area = { //высота и ширина в шагах
   HEIGHT: 12
 }
 
-drawMouseMove();
+let drowObj = (obj, place, size, className) => {
+  let byClass = place.getElementsByClassName('className');
+  while(byClass.length > 0){
+    byClass[0].parentNode.removeChild(byClass[0]);
+  }
+  for (let i=0; i<obj.length; i += 1){
+    let objEl = document.createElement("div");
+    objEl.className = 'className';
+    place.appendChild(objEl);
+    objEl.setAttribute('style', 'left:' + size*obj[i].x + 'px');
+    objEl.style.top= size*obj[i].y + 'px';
+  }
+};
+// drowObj(objSnake, wrapper, step, 'snake');
+// drowObj(objMouse, wrapper, step, 'mouse');
+// drawMouseMove();
+drowObj(objMouse, wrapper, step, 'mouse');
 
 function key(b){
   switch(b.keyCode){
@@ -91,7 +107,8 @@ function controlSnake(axis, vector){
         prevTile = currTile;
       }
     }
-    drawSnakeMove();
+    // drawSnakeMove();
+    drowObj(objSnake, wrapper, step, 'snake');
     console.log('SNAKE IN: ', JSON.stringify(objSnake));
     console.log('MOUSE IN: ', JSON.stringify(objMouse));
     if (isEllInObj(objSnake[0], objSnake, 1)){
@@ -106,7 +123,8 @@ function controlSnake(axis, vector){
           objMouse.x = getRandomInt(0, area.WIDTH);
           objMouse.y = getRandomInt(0, area.HEIGHT);
         } while (isEllInObj(objMouse, objSnake, 0));
-          drawMouseMove();
+          // drawMouseMove();
+          drowObj(objMouse, wrapper, step, 'mouse');
           score += 1;
           objSnake.push({x:0, y:0});
           console.log('PUSH!');
@@ -119,32 +137,35 @@ function controlSnake(axis, vector){
     }
   }
 }
+// const wrapper = document.getElementById("wrap4All");
 
-function drawSnakeMove(){
-  let sClass = wrapper.getElementsByClassName('snake');
-  while(sClass.length > 0){
-    sClass[0].parentNode.removeChild(sClass[0]);
-  }
-  for (let i=0; i<objSnake.length; i += 1){
-    let snakeEl = document.createElement("div");
-    snakeEl.className = 'snake';
-    wrapper.appendChild(snakeEl);
-    snakeEl.setAttribute('style', 'left:' + step*objSnake[i].x + 'px');
-    snakeEl.style.top= step*objSnake[i].y + 'px';
-  };
-};
 
-function drawMouseMove() { // перестановка div мыши при "поимке"
-  let sClass = wrapper.getElementsByClassName('mouse');
-  while(sClass.length > 0){
-    sClass[0].parentNode.removeChild(sClass[0]);
-  }
-  let mouseEl = document.createElement("div");
-  mouseEl.className = 'mouse';
-  wrapper.appendChild(mouseEl);
-  mouseEl.setAttribute('style', 'left:' + step*objMouse.x + 'px');
-  mouseEl.style.top= step*objMouse.y + 'px';
-};
+//
+// function drawSnakeMove(){
+//   let sClass = wrapper.getElementsByClassName('snake');
+//   while(sClass.length > 0){
+//     sClass[0].parentNode.removeChild(sClass[0]);
+//   }
+//   for (let i=0; i<objSnake.length; i += 1){
+//     let snakeEl = document.createElement("div");
+//     snakeEl.className = 'snake';
+//     wrapper.appendChild(snakeEl);
+//     snakeEl.setAttribute('style', 'left:' + step*objSnake[i].x + 'px');
+//     snakeEl.style.top= step*objSnake[i].y + 'px';
+//   };
+// };
+//
+// function drawMouseMove() { // перестановка div мыши при "поимке"
+//   let sClass = wrapper.getElementsByClassName('mouse');
+//   while(sClass.length > 0){
+//     sClass[0].parentNode.removeChild(sClass[0]);
+//   }
+//   let mouseEl = document.createElement("div");
+//   mouseEl.className = 'mouse';
+//   wrapper.appendChild(mouseEl);
+//   mouseEl.setAttribute('style', 'left:' + step*objMouse.x + 'px');
+//   mouseEl.style.top= step*objMouse.y + 'px';
+// };
 
 function getRandomInt(min, max) { // получение рандомных координат для мыши
   let rand = min - 0.5 + Math.random() * (max - min + 1);
