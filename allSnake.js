@@ -39,21 +39,33 @@ const area = { //высота и ширина в шагах
   HEIGHT: 12
 }
 
-let drowObj = (obj, place, size, className) => {
-  let byClass = place.getElementsByClassName('className');
+const drowObj = (obj, place, size, className) => {
+
+  const byClass = place.getElementsByClassName(className);
   while(byClass.length > 0){
     byClass[0].parentNode.removeChild(byClass[0]);
   }
-  for (let i=0; i<obj.length; i += 1){
+  if (!obj.length){
     let objEl = document.createElement("div");
-    objEl.className = 'className';
+    objEl.className = className;
     place.appendChild(objEl);
-    objEl.setAttribute('style', 'left:' + size*obj[i].x + 'px');
-    objEl.style.top= size*obj[i].y + 'px';
-  }
+    objEl.setAttribute('style', 'left:' + size*obj.x + 'px');
+    objEl.style.top= size*obj.y + 'px';
+  } else {
+      for (let i=0; i<obj.length /*|| i <= 1*/; i += 1){
+        let objEl = document.createElement("div");
+        objEl.className = className;
+        place.appendChild(objEl);
+        objEl.setAttribute('style', 'left:' + size*obj[i].x + 'px');
+        objEl.style.top= size*obj[i].y + 'px';
+      }
+    }
 };
+
 // drowObj(objSnake, wrapper, step, 'snake');
 // drowObj(objMouse, wrapper, step, 'mouse');
+// drowObj(objMouse, wrapper, step, 'mouse');
+
 // drawMouseMove();
 drowObj(objMouse, wrapper, step, 'mouse');
 
@@ -178,7 +190,7 @@ const myControlSnake = function() {
   }
 };
 
-let timerId = setInterval(myControlSnake, 1000/2);
+let timerId = setInterval(myControlSnake, 1000/3);
 
 document.addEventListener("keydown", key);
 
