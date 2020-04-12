@@ -7,6 +7,7 @@ let score = 0; // счёт, сколько мышей поймано
 let lastMove; //
 let tick = 0; // сколько движений произошло
 let isStop = 0;
+let allowed = 1; //резарешение на кейс
 let objMouse = {
   x: 3,
   y: 3
@@ -40,7 +41,6 @@ const area = { //высота и ширина в шагах
 }
 
 const drowObj = (obj, place, size, className) => {
-
   const byClass = place.getElementsByClassName(className);
   while(byClass.length > 0){
     byClass[0].parentNode.removeChild(byClass[0]);
@@ -62,49 +62,47 @@ const drowObj = (obj, place, size, className) => {
     }
 };
 
-// drowObj(objSnake, wrapper, step, 'snake');
-// drowObj(objMouse, wrapper, step, 'mouse');
-// drowObj(objMouse, wrapper, step, 'mouse');
-
-// drawMouseMove();
 drowObj(objMouse, wrapper, step, 'mouse');
 
+
 function key(b){
-  switch(b.keyCode){
-    case keys.LEFT:
-      if (lastMove !== 'right'){
-        lastMove = 'left';
-        axi = 'x';
-        dir = -1;
-      }
+  if (allowed === 1){
+    switch(b.keyCode){
+      case keys.LEFT:
+        if (lastMove !== 'right'){
+          lastMove = 'left';
+          axi = 'x';
+          dir = -1;
+        };
+        break;
+      case keys.UP:
+        if (lastMove !== 'down'){
+          lastMove = 'up';
+          axi = 'y';
+          dir = -1;
+        };
+        break;
+      case keys.RIGHT:
+        if (lastMove !== 'left'){
+          lastMove = 'right';
+          axi = 'x';
+          dir = 1;
+        };
+        break;
+      case keys.DOWN:
+        if (lastMove !== 'up'){
+          lastMove = 'down';
+          axi = 'y';
+          dir = 1;
+        };
       break;
-    case keys.UP:
-      if (lastMove !== 'down'){
-        lastMove = 'up';
-        axi = 'y';
-        dir = -1;
-      }
-      break;
-    case keys.RIGHT:
-      if (lastMove !== 'left'){
-        lastMove = 'right';
-        axi = 'x';
-        dir = 1;
-      }
-      break;
-    case keys.DOWN:
-      if (lastMove !== 'up'){
-        lastMove = 'down';
-        axi = 'y';
-        dir = 1;
-      }
-    break;
+    }
+    allowed = 0;
   }
 };
 
 function controlSnake(axis, vector){
   if (tick===0){ //начало, логическое добавление головы
-    //objSnake.push({x:0, y:0});
     objSnake[0][axis] += vector;
     tick += 1;
   } else { //логическое движение
@@ -119,8 +117,8 @@ function controlSnake(axis, vector){
         prevTile = currTile;
       }
     }
-    // drawSnakeMove();
     drowObj(objSnake, wrapper, step, 'snake');
+    allowed = 1;
     console.log('SNAKE IN: ', JSON.stringify(objSnake));
     console.log('MOUSE IN: ', JSON.stringify(objMouse));
     if (isEllInObj(objSnake[0], objSnake, 1)){
@@ -128,56 +126,24 @@ function controlSnake(axis, vector){
       alert("You lose! Snake eat itselves!");
     } else {
     if (objSnake[0].x !== area.WIDTH+1 && objSnake[0].y !== area.HEIGHT+1 && objSnake[0].x !== -1 && objSnake[0].y !== -1){
-      // drawSnakeMove();
       console.log("snake is moving")
       if (objSnake[0].x === objMouse.x && objSnake[0].y === objMouse.y){ // логическая поимка мыши
         do {
           objMouse.x = getRandomInt(0, area.WIDTH);
           objMouse.y = getRandomInt(0, area.HEIGHT);
         } while (isEllInObj(objMouse, objSnake, 0));
-          // drawMouseMove();
           drowObj(objMouse, wrapper, step, 'mouse');
           score += 1;
           objSnake.push({x:0, y:0});
           console.log('PUSH!');
       }
-
     }
     else {
       isStop = 1;
       alert("You lose");
     }
   }
-}
-// const wrapper = document.getElementById("wrap4All");
-
-
-//
-// function drawSnakeMove(){
-//   let sClass = wrapper.getElementsByClassName('snake');
-//   while(sClass.length > 0){
-//     sClass[0].parentNode.removeChild(sClass[0]);
-//   }
-//   for (let i=0; i<objSnake.length; i += 1){
-//     let snakeEl = document.createElement("div");
-//     snakeEl.className = 'snake';
-//     wrapper.appendChild(snakeEl);
-//     snakeEl.setAttribute('style', 'left:' + step*objSnake[i].x + 'px');
-//     snakeEl.style.top= step*objSnake[i].y + 'px';
-//   };
-// };
-//
-// function drawMouseMove() { // перестановка div мыши при "поимке"
-//   let sClass = wrapper.getElementsByClassName('mouse');
-//   while(sClass.length > 0){
-//     sClass[0].parentNode.removeChild(sClass[0]);
-//   }
-//   let mouseEl = document.createElement("div");
-//   mouseEl.className = 'mouse';
-//   wrapper.appendChild(mouseEl);
-//   mouseEl.setAttribute('style', 'left:' + step*objMouse.x + 'px');
-//   mouseEl.style.top= step*objMouse.y + 'px';
-// };
+};
 
 function getRandomInt(min, max) { // получение рандомных координат для мыши
   let rand = min - 0.5 + Math.random() * (max - min + 1);
@@ -189,8 +155,10 @@ const myControlSnake = function() {
     return controlSnake(axi, dir);
   }
 };
-
-let timerId = setInterval(myControlSnake, 1000/3);
+let speed = () => {
+  return 1000;
+}
+let timerId = setInterval(myControlSnake, 1000);
 
 document.addEventListener("keydown", key);
 
